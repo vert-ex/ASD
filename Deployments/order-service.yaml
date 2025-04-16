@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: order-service
-        image: mohitsp21/order-service:latest
+        image: meetpatel1389/order-service:latest
         ports:
         - containerPort: 3050
         env:
