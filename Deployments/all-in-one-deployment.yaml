@@ -1,0 +1,298 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-service
+  labels:
+    app: ai-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ai-service
+  template:
+    metadata:
+      labels:
+        app: ai-service
+    spec:
+      containers:
+      - name: ai-service
+        image: zeelu1/ai-service:latest
+        ports:
+        - containerPort: 3080
+        env:
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ai-service-secrets
+              key: openai-api-key
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m" 
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: makeline-service
+  labels:
+    app: makeline-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: makeline-service
+  template:
+    metadata:
+      labels:
+        app: makeline-service
+    spec:
+      containers:
+      - name: makeline-service
+        image: zeelu1/makeline-service:latest
+        ports:
+        - name: http
+          containerPort: 3070
+        env:
+        - name: PORT
+          value: "3070"
+        - name: AZURE_SERVICE_BUS_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: makeline-secrets
+              key: service-bus-connection-string
+        - name: AZURE_SERVICE_BUS_QUEUE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: makeline-secrets
+              key: service-bus-queue-name
+        - name: COSMOS_DB_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: makeline-secrets
+              key: cosmos-db-connection-string
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        readinessProbe:
+          httpGet:
+            path: /api/orders
+            port: 3070
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /api/orders
+            port: 3070
+          initialDelaySeconds: 15
+          periodSeconds: 20 
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+  labels:
+    app: order-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+      - name: order-service
+        image: zeelu1/order-service:latest
+        ports:
+        - containerPort: 3050
+        env:
+        - name: PORT
+          value: "3050"
+        - name: AZURE_SERVICE_BUS_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: azure-secrets
+              key: service-bus-connection-string
+        - name: AZURE_SERVICE_BUS_QUEUE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: azure-secrets
+              key: service-bus-queue-name
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m" 
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-service
+  template:
+    metadata:
+      labels:
+        app: product-service
+    spec:
+      containers:
+      - name: product-service
+        image: zeelu1/product-service:latest
+        ports:
+        - containerPort: 3060
+        env:
+        - name: PORT
+          value: "3060"
+        - name: MONGO_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: product-service-secrets
+              key: MONGO_USERNAME
+        - name: MONGO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: product-service-secrets
+              key: MONGO_PASSWORD
+        - name: COSMOS_DB_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: product-service-secrets
+              key: COSMOS_DB_CONNECTION_STRING
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3060
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3060
+          initialDelaySeconds: 20
+          periodSeconds: 20 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: store-admin
+  labels:
+    app: store-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: store-admin
+  template:
+    metadata:
+      labels:
+        app: store-admin
+    spec:
+      containers:
+      - name: store-admin
+        image: zeelu1/store-admin:latest
+        ports:
+        - containerPort: 3001
+        env:
+        - name: NEXT_PUBLIC_PRODUCT_API_URL
+          valueFrom:
+            configMapKeyRef:
+              name: store-admin-config
+              key: NEXT_PUBLIC_PRODUCT_API_URL
+        - name: NEXT_PUBLIC_AI_SERVICE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: store-admin-config
+              key: NEXT_PUBLIC_AI_SERVICE_URL
+        - name: NEXT_PUBLIC_MAKELINE_API_URL
+          valueFrom:
+            configMapKeyRef:
+              name: store-admin-config
+              key: NEXT_PUBLIC_MAKELINE_API_URL
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3001
+          initialDelaySeconds: 5
+          periodSeconds: 5 
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: store-front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: store-front
+  template:
+    metadata:
+      labels:
+        app: store-front
+    spec:
+      containers:
+      - name: store-front
+        image: zeelu1/store-front-25w:amd64
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: store-front-config
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 10
