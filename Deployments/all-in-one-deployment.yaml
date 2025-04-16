@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: ai-service
-        image: zeelu1/ai-service:latest
+        image: mohitsp21/ai-service:latest
         ports:
         - containerPort: 3080
         env:
@@ -53,7 +53,7 @@ spec:
     spec:
       containers:
       - name: makeline-service
-        image: zeelu1/makeline-service:latest
+        image: mohitsp21/makeline-service:latest
         ports:
         - name: http
           containerPort: 3070
@@ -115,7 +115,7 @@ spec:
     spec:
       containers:
       - name: order-service
-        image: zeelu1/order-service:latest
+        image: mohitsp21/order-service:latest
         ports:
         - containerPort: 3050
         env:
@@ -156,7 +156,7 @@ spec:
     spec:
       containers:
       - name: product-service
-        image: zeelu1/product-service:latest
+        image: mohitsp21/product-service:latest
         ports:
         - containerPort: 3060
         env:
@@ -215,7 +215,7 @@ spec:
     spec:
       containers:
       - name: store-admin
-        image: zeelu1/store-admin:latest
+        image: mohitsp21/store-admin:latest
         ports:
         - containerPort: 3001
         env:
@@ -271,7 +271,7 @@ spec:
     spec:
       containers:
       - name: store-front
-        image: zeelu1/store-front-25w:amd64
+        image: mohitsp21/store-front-25w:amd64
         ports:
         - containerPort: 3000
         envFrom:
