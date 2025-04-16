@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: ai-service
-        image: zeelu1/ai-service:latest
+        image: mohitsp21/ai-service:latest
         ports:
         - containerPort: 3080
         env:
