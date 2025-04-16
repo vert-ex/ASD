@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: store-admin
-        image: mohitsp21/store-admin:latest
+        image: meetpatel1389/store-admin:latest
         ports:
         - containerPort: 3001
         env:
