@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: ai-service
-        image: mohitsp21/ai-service:latest
+        image: meetpatel1389/ai-service:latest
         ports:
         - containerPort: 3080
         env:
