@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: product-service
-        image: mohitsp21/product-service:latest
+        image: meetpatel1389/product-service:latest
         ports:
         - containerPort: 3060
         env:
