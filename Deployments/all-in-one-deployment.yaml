@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: ai-service
-        image: mohitsp21/ai-service:latest
+        image: meetpatel1389/ai-service:latest
         ports:
         - containerPort: 3080
         env:
@@ -53,7 +53,7 @@ spec:
     spec:
       containers:
       - name: makeline-service
-        image: mohitsp21/makeline-service:latest
+        image: meetpatel1389/makeline-service:latest
         ports:
         - name: http
           containerPort: 3070
@@ -115,7 +115,7 @@ spec:
     spec:
       containers:
       - name: order-service
-        image: mohitsp21/order-service:latest
+        image: meetpatel1389/order-service:latest
         ports:
         - containerPort: 3050
         env:
@@ -156,7 +156,7 @@ spec:
     spec:
       containers:
       - name: product-service
-        image: mohitsp21/product-service:latest
+        image: meetpatel1389/product-service:latest
         ports:
         - containerPort: 3060
         env:
@@ -215,7 +215,7 @@ spec:
     spec:
       containers:
       - name: store-admin
-        image: mohitsp21/store-admin:latest
+        image: meetpatel1389/store-admin:latest
         ports:
         - containerPort: 3001
         env:
@@ -271,7 +271,7 @@ spec:
     spec:
       containers:
       - name: store-front
-        image: mohitsp21/store-front-25w:amd64
+        image: meetpatel1389/store-front-25w:amd64
         ports:
         - containerPort: 3000
         envFrom:
