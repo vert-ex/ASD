@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: store-front
-        image: mohitsp21/store-front-25w:amd64
+        image: meetpatel1389/store-front-25w:amd64
         ports:
         - containerPort: 3000
         envFrom:
